@@ -1,0 +1,24 @@
+# 统一换行符，避免跨平台协作时产生无意义的整文件 diff
+* text=auto eol=lf
+
+*.md    text eol=lf
+*.html  text eol=lf
+*.sql   text eol=lf
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+# 二进制资源不参与换行符转换
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.mp4   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.pdf   binary

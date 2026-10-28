@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotis Swag 平台系统拆解与仿制规格书</title>
+<style>
+:root{
+  --bg:#ffffff; --bg2:#faf9f6; --bg3:#f4f3ee;
+  --tx:#1a1a18; --tx2:#5f5e5a; --tx3:#888780;
+  --bd:#e3e1da; --bd2:#d3d1c7;
+  --blue:#185fa5; --blue-l:#e6f1fb; --blue-m:#b5d4f4;
+  --teal:#0f6e56; --teal-l:#e1f5ee; --teal-m:#9fe1cb;
+  --amber:#854f0b; --amber-l:#faeeda; --amber-m:#fac775;
+  --red:#a32d2d; --red-l:#fcebeb; --red-m:#f7c1c1;
+  --purple:#534ab7; --purple-l:#eeedfe; --purple-m:#ce cbf6;
+  --green:#3b6d11; --green-l:#eaf3de; --green-m:#c0dd97;
+  --pink:#993556; --pink-l:#fbeaf0;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg2); color:var(--tx);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:15px; line-height:1.75; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 80px}
+header.hero{background:var(--bg);border-bottom:1px solid var(--bd);padding:44px 0 36px;margin-bottom:0}
+header.hero .wrap{padding-bottom:0}
+.kicker{font-size:12px;letter-spacing:.14em;color:var(--tx3);text-transform:uppercase;margin:0 0 10px}
+h1{font-size:30px;line-height:1.3;font-weight:700;margin:0 0 12px;letter-spacing:-.01em}
+.sub{font-size:15px;color:var(--tx2);margin:0 0 22px;max-width:760px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:20px}
+.chip{font-size:12px;padding:4px 11px;border-radius:999px;background:var(--bg3);color:var(--tx2);border:1px solid var(--bd)}
+nav.toc{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:22px 26px;margin:28px 0 40px}
+nav.toc h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--tx3);margin:0 0 14px;font-weight:600}
+nav.toc ol{margin:0;padding-left:20px;columns:3;column-gap:32px;font-size:14px}
+nav.toc li{margin-bottom:6px;break-inside:avoid}
+nav.toc a{color:var(--blue);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+section{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:30px 32px;margin-bottom:22px}
+h2.sec{font-size:22px;font-weight:700;margin:0 0 6px;padding-bottom:12px;border-bottom:2px solid var(--blue-l);letter-spacing:-.01em}
+h2.sec .num{color:var(--tx3);font-weight:400;margin-right:10px;font-size:16px}
+h3{font-size:17px;font-weight:600;margin:28px 0 10px;padding-left:11px;border-left:3px solid var(--blue)}
+h4{font-size:15px;font-weight:600;margin:20px 0 8px;color:var(--tx)}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:5px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:var(--bg3);padding:1.5px 5px;border-radius:4px;border:1px solid var(--bd)}
+pre{background:#22201c;color:#f0efea;border-radius:10px;padding:16px 18px;overflow-x:auto;font-size:12.5px;line-height:1.6;margin:0 0 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit}
+table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:13.5px}
+th{background:var(--bg3);text-align:left;padding:9px 11px;border:1px solid var(--bd2);font-weight:600;font-size:12.5px;color:var(--tx)}
+td{padding:9px 11px;border:1px solid var(--bd);vertical-align:top}
+tbody tr:nth-child(even){background:var(--bg2)}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+.t-blue{background:var(--blue-l);color:var(--blue)}
+.t-teal{background:var(--teal-l);color:var(--teal)}
+.t-amber{background:var(--amber-l);color:var(--amber)}
+.t-red{background:var(--red-l);color:var(--red)}
+.t-purple{background:var(--purple-l);color:var(--purple)}
+.t-green{background:var(--green-l);color:var(--green)}
+.t-gray{background:var(--bg3);color:var(--tx2)}
+.callout{border-left:3px solid var(--blue);background:var(--blue-l);padding:14px 18px;border-radius:0 8px 8px 0;margin:0 0 18px}
+.callout.warn{border-color:var(--amber);background:var(--amber-l)}
+.callout.risk{border-color:var(--red);background:var(--red-l)}
+.callout.ok{border-color:var(--green);background:var(--green-l)}
+.callout .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:5px;color:var(--tx2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.card{border:1px solid var(--bd);border-radius:10px;padding:16px 18px;background:var(--bg)}
+.card h4{margin-top:0}
+.card p:last-child{margin-bottom:0}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 16px;font-size:13.5px;margin-bottom:14px}
+.kv dt{color:var(--tx3);font-weight:500}
+.kv dd{margin:0;font-weight:500}
+.src{font-size:12px;color:var(--tx3);margin-top:6px;font-style:normal}
+.src a{color:var(--tx3);text-decoration:none;border-bottom:1px dotted var(--bd2)}
+footer{text-align:center;color:var(--tx3);font-size:12.5px;padding:26px 0 10px;border-top:1px solid var(--bd);margin-top:12px}
+@media print{
+  body{background:#fff;font-size:10.5pt}
+  nav.toc{page-break-after:always}
+  section{page-break-inside:avoid;border:none;padding:0 0 18px}
+  header.hero{padding-top:0}
+  .chip,.tag{border:1px solid #ccc}
+}
+@media (max-width:900px){
+  nav.toc ol{columns:1}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .kv{grid-template-columns:1fr}
+  .kv dt{margin-top:6px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="wrap">
+  <p class="kicker">Competitive Intelligence · 竞品拆解报告</p>
+  <h1>Kotis Swag 平台系统拆解与仿制规格书</h1>
+  <p class="sub">对标美国定制周边礼品（Swag）服务商 Kotis Design，向客户交付「仓储管理系统 + 下单系统」的一体化 SaaS。本报告拆解其产品架构、门户形态、审批与预算机制、仓储履约 SLA、API 契约与报表体系，并给出可落地的仿制实施路线与数据模型设计。</p>
+  <div class="meta">
+    <span class="chip">报告日期：2026-10-29</span>
+    <span class="chip">情报来源：官方帮助中心 / 定价页 / 平台页 / API 文档 / 第三方评测</span>
+    <span class="chip">仿制目标：多租户 B2B2C 定制礼品平台</span>
+    <span class="chip">交付形态：规格书 v1.0</span>
+  </div>
+</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#s1">执行摘要与核心结论</a></li>
+    <li><a href="#s2">Kotis 业务模式与平台全景</a></li>
+    <li><a href="#s3">技术栈指纹与架构推断</a></li>
+    <li><a href="#s4">门户类型矩阵（4 种形态）</a></li>
+    <li><a href="#s5">下单系统功能规格</a></li>
+    <li><a href="#s6">仓储管理系统功能规格</a></li>
+    <li><a href="#s7">权限与角色模型</a></li>
+    <li><a href="#s8">核心数据模型设计</a></li>
+    <li><a href="#s9">API 契约规格</a></li>
+    <li><a href="#s10">报表体系（14 张报表）</a></li>
+    <li><a href="#s11">SLA 与履约标准</a></li>
+    <li><a href="#s12">计费模型与商业设计</a></li>
+    <li><a href="#s13">集成生态清单</a></li>
+    <li><a href="#s14">仿制实施路线图</a></li>
+    <li><a href="#s15">差异化机会与风险清单</a></li>
+    <li><a href="#s16">情报来源索引</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2 class="sec"><span class="num">01</span>执行摘要与核心结论</h2>
+
+  <p>Kotis Design（<a href="https://kotisdesign.com" target="_blank" rel="noopener">kotisdesign.com</a>）成立于 2003 年，总部西雅图，实为远程办公的定制周边礼品服务商，同时自研并运营一整套面向客户的 SaaS 平台。该平台在 G2「Promotional Product Management」品类连续 11 个季度排名第一，客户包括 AWS、Kraft Heinz、MongoDB、DigitalOcean、Bethesda、Meta、Coursera。</p>
+
+  <div class="callout ok">
+    <span class="lbl">最重要的三个判断</span>
+    <ol style="margin:0">
+      <li><strong>它卖的不是软件，是「托管的仓储 + 履约 + 平台」三合一。</strong>平台费可被季度采购额抵扣（≥$5,000/季免平台费），这决定了仿制系统必须把「采购金额」而非「订阅费」当成核心计费锚点。</li>
+      <li><strong>系统真正的技术内核是「一套库存、多个门户」。</strong>所有 Portal 共用一个 SKU 库存池，Portal 只决定「谁能看、看到什么、什么价、怎么付、要不要审批」——这套「多租户 Portal + 共享库存」模型是整个产品最值得抄的部分。</li>
+      <li><strong>面向客户交付的是两个系统，不是一个。</strong>对客户是「下单系统」（Portal + MyKotis 后台），对内部是「仓储管理系统」（WMS、收货、盘点、打包发运）。仿制时若只做前端下单而不做 WMS，履约承诺无法落地。</li>
+    </ol>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <h4>客户可感知的价值</h4>
+      <p>无限门店 + 无限用户不额外收费；实时库存可见；下单后当日发运（12:00 前下单）；98% 准时率；95% 美国地区 2 日达。</p>
+    </div>
+    <div class="card">
+      <h4>最难的工程点</h4>
+      <p>SKU 粒度定义（每个尺码独立成 SKU）、共享库存下的多 Portal 定价、审批流与预算的双重闸门、订单—发货—运单三段状态分离。</p>
+    </div>
+    <div class="card">
+      <h4>最容易被忽略但必须做</h4>
+      <p>PII 脱敏、缺货先发（Short Ship）、Excel/CSV 批量下单、季度账单透明化。这四项是 3.8 分和 4.7 分口碑的分界线。</p>
+    </div>
+  </div>
+
+  <h3>产品能力全景（对标评分）</h3>
+  <table>
+    <thead><tr><th style="width:22%">能力域</th><th>Kotis 的做法</th><th style="width:14%">仿制优先级</th></tr></thead>
+    <tbody>
+      <tr><td><strong>品牌定制门户</strong></td><td>4 种门户形态；字体/配色/Hero Banner/分类图/目录顺序可配；网站头部页脚复制（$1,000/个，含每年 2 次微调）</td><td><span class="tag t-red">P0</span></td></tr>
+      <tr><td><strong>库存与 SKU</strong></td><td>单 SKU 化尺码；托盘计价；IIR 在途登记；盘点周期；库存调整留痕与原因码</td><td><span class="tag t-red">P0</span></td></tr>
+      <tr><td><strong>订单审批</strong></td><td>门户级 + 位置级审批人；审批人可改数量/改运输等级/改需求日期；可拒单并附原因</td><td><span class="tag t-red">P0</span></td></tr>
+      <tr><td><strong>预算管控</strong></td><td>按用户组设预算；余额在结算页红色显示；耗尽即锁单，需人工重置</td><td><span class="tag t-red">P0</span></td></tr>
+      <tr><td><strong>兑换码与积分</strong></td><td>一次性码、积分额度、邮件下发模板、状态查询 API；日限 5,000 / 年限 100,000</td><td><span class="tag t-amber">P1</span></td></tr>
+      <tr><td><strong>批量下单</strong></td><td>CSV 模板严格匹配才可提交；支持惊喜单（移除确认邮件）</td><td><span class="tag t-amber">P1</span></td></tr>
+      <tr><td><strong>履约与物流</strong></td><td>自有美仓（俄亥俄+犹他）+ 英/欧/印/中；Economy 全承运商比价；DDP/DDU 双轨</td><td><span class="tag t-red">P0</span></td></tr>
+      <tr><td><strong>报表</strong></td><td>14 张标准报表，全部可 CSV 导出，含成本、COGS、盘点时长</td><td><span class="tag t-amber">P1</span></td></tr>
+      <tr><td><strong>集成</strong></td><td>Salesforce / Shopify / Zapier / Workday / BambooHR / Coupa PunchOut / GA / SSO(SAML·Google·Azure·Okta)</td><td><span class="tag t-amber">P1</span></td></tr>
+      <tr><td><strong>生产打样</strong></td><td>数字 Mockup、电子签名放行生产、Showcase 分享链接免登录</td><td><span class="tag t-purple">P2</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s2">
+  <h2 class="sec"><span class="num">02</span>Kotis 业务模式与平台全景</h2>
+
+  <h3>2.1 商业模式拆解</h3>
+  <p>Kotis 的收入结构是「商品毛利 + 平台费（可抵扣）+ 运费（10% 加价）+ 仓储履约费」。其设计意图非常明确：<strong>平台费是一道收入闸门，但可以用采购额直接抹平</strong>，从而让客户「买得越多、平台越免费」，把自身锁进客户的采购预算里。</p>
+
+  <table>
+    <thead><tr><th style="width:16%">层级</th><th style="width:22%">套餐</th><th>门槛</th><th style="width:20%">含容量</th></tr></thead>
+    <tbody>
+      <tr><td>纯 Swag</td><td><strong>Core</strong></td><td>首单最低 $500，无平台费</td><td>在线订单管理、订单追踪、专业设计服务、海外采购与国际运输</td></tr>
+      <tr><td rowspan="3">平台<br><span class="src">仓储 + 履约</span></td><td><strong>Standard</strong></td><td>$5k/季采购额</td><td>100 SKU / 5 托盘；无限用户；无限门店；SSO；实时报表</td></tr>
+      <tr><td><strong>Premium</strong></td><td>$100k/年</td><td>250 SKU / 20 托盘；安全审计；3 人专属团队；双周例会</td></tr>
+      <tr><td><strong>Enterprise</strong></td><td>$500k/年</td><td>500 SKU / 50 托盘；库存审计；专属 Teams 频道；优先开发需求</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="lbl">计费规则中的关键细节（仿制时容易漏）</span>
+    <ul style="margin:0">
+      <li>季度采购额 &lt; $5,000 时平台费按 <strong>$499/月</strong> 计；≥$5,000 则<strong>整个季度豁免</strong>。</li>
+      <li>Standard 及以上有 <strong>$2,500 一次性实施费</strong>，Core 无。</li>
+      <li><strong>首月不足整季不收平台费</strong>，且该部分采购额可计入下一完整季度的 $5,000 门槛。</li>
+      <li>采购额<strong>不按比例摊分、不向后追溯</strong>，按滚动四个季度合计在季末结算。</li>
+      <li>运费加价 <strong>10%</strong>；Economy 渠道走全承运商实时比价。</li>
+      <li>超出 SKU / 托盘额度不立即报错，<strong>季末按超出量计费</strong>，或引导客户升级套餐。</li>
+    </ul>
+  </div>
+
+  <h3>2.2 三端系统全景</h3>
+  <p>Kotis 的系统实际上是三个独立但数据贯通的子系统。仿制时的架构切分建议直接照搬：</p>
+
+  <table>
+    <thead><tr><th style="width:20%">子系统</th><th style="width:26%">承载</th><th>核心职责</th></tr></thead>
+    <tbody>
+      <tr><td><strong>A. 客户门户<br>（Storefront）</strong></td><td><code>stores.kotisdesign.com/<span>portal</span></code></td><td>终端用户浏览、选规格、下单、兑换、查物流。多租户，每客户可开多个 Portal，共用一套 SKU 库存池</td></tr>
+      <tr><td><strong>B. 运营后台<br>（MyKotis）</strong></td><td><code>mykotis.kotisdesign.com</code></td><td>Program Admin 工作台：报表、订单查询、库存管理下单、门户配置、用户管理、审批、Incoming Inventory、程序设置</td></tr>
+      <tr><td><strong>C. 仓储履约<br>（WMS）</strong></td><td>内部系统<br><span class="src">移动端扫码</span></td><td>收货 QA、盘点 Cycle Count、拣货打包、承运商发运、运单回传、物流轨迹抓取</td></tr>
+    </tbody>
+  </table>
+
+  <p>另有一条<strong>生产前置链路</strong>（属定制业务独有）：Product Sourcing → Showcase（选品提案） → Mockup（数字打样） → 客户审批 + 电子签名 → 下单生产 → 入库。终端用户不感知，但 MyKotis 首页的「Projects / Past Projects / Showcases / Payments」四个 Tab 就是这条链路。</p>
+</section>
+
+<section id="s3">
+  <h2 class="sec"><span class="num">03</span>技术栈指纹与架构推断</h2>
+
+  <p>通过直接读取响应头，可确认其技术选型（实测，非推测）：</p>
+
+  <table>
+    <thead><tr><th style="width:22%">证据</th><th>观测值</th><th style="width:34%">结论</th></tr></thead>
+    <tbody>
+      <tr><td>响应头 <code>X-Runtime</code></td><td><code>0.009225</code> / <code>0.003423</code>（秒级耗时）</td><td><strong>Ruby on Rails</strong>。此头为 Rails 默认中间件输出</td></tr>
+      <tr><td>Cookie 名</td><td><code>_depot_session</code>（门户）、<code>_my_kotis_session</code>（后台）</td><td>Rails <code>session_store</code> 默认派生名；<strong>两个独立 Rails 应用</strong></td></tr>
+      <tr><td>响应头 <code>X-Request-Id</code></td><td>UUID 格式，每请求唯一</td><td>Rails <code>ActionDispatch::RequestId</code></td></tr>
+      <tr><td>服务器</td><td><code>nginx</code></td><td>Rails 前置反代</td></tr>
+      <tr><td>API 响应格式</td><td><code>{ "data": [...], "included": [...], "jsonapi": { "version": "1.0" } }</code></td><td><strong>严格遵循 JSON:API 1.0 规范</strong>，含 relationships / included 侧载</td></tr>
+      <tr><td>前端</td><td>合作方 LeapOut 公开案例：自建定制功能 → 演进为 <strong>headless 架构</strong>，以 Shopify 为底层 commerce engine</td><td>门户前端自研 + Shopify 作为交易引擎；改造后流量 +2,800%、PV +4,400%</td></tr>
+      <tr><td>防护</td><td><code>Server: cloudflare</code>、<code>Cf-Mitigated: challenge</code></td><td>Cloudflare Bot 防护</td></tr>
+      <tr><td>API 域</td><td>订单/库存：<code>kwf.kotisdesign.com</code>；兑换码：<code>stores.kotisdesign.com</code></td><td>两个 API 服务：<strong>KWF（仓储履约）</strong> 与 <strong>Storefront</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <span class="lbl">仿制建议</span>
+    <p style="margin:0">沿用 <strong>Rails + JSON:API + PostgreSQL</strong> 能最大程度贴近其工程习惯；JSON:API 规范值得直接采用（关系侧载、错误对象结构统一，第三方集成成本极低）。若团队以 JS/TS 为主，可选 Node/NestJS + 自建 JSON:API 序列化层，或 FastAPI + 自定义 schema——但要保证对外响应形状一致。Shopify 适合快速起步（自带商品/结账/税务），一旦要支持「非信用卡 + 审批 + 预算 + 共享库存」这类强定制门户，headless 才是正解。</p>
+  </div>
+</section>
+
+<section id="s4">
+  <h2 class="sec"><span class="num">04</span>门户类型矩阵（4 种形态）</h2>
+
+  <p>这是 Kotis 产品设计的核心。四种门户共享同一套 SKU 库存池，差异只在「支付、准入、管控」三个维度。</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:19%">能力</th>
+        <th style="width:27%">Non-Credit Card<br><span class="src">员工/客户领用</span></th>
+        <th style="width:27%">Credit Card Store<br><span class="src">零售变现</span></th>
+        <th style="width:27%">Redemption Portal<br><span class="src">兑换码/礼品</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>结账支付</td><td>无需信用卡，走审批</td><td>信用卡（Stripe Connect 分账）</td><td>凭一次性码兑换</td></tr>
+      <tr><td>准入控制</td><td>用户白名单 / 访问码</td><td>公开可访问</td><td>必须输入兑换码</td></tr>
+      <tr><td>订单审批</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>用户组 + 预算</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>限购数量</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>结账自定义字段</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>多规格网格下单</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>顶部文本与高亮</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>访问码保护</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>礼品卡 / 折扣码</td><td><span class="tag t-gray">—</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>积分制</td><td><span class="tag t-gray">—</span></td><td><span class="tag t-gray">—</span></td><td><span class="tag t-green">支持</span></td></tr>
+      <tr><td>兑换码</td><td><span class="tag t-gray">—</span></td><td><span class="tag t-gray">—</span></td><td><span class="tag t-green">支持</span></td></tr>
+      <tr><td>手写贺卡</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td></tr>
+      <tr><td>退货标签服务</td><td><span class="tag t-green">支持</span></td><td><span class="tag t-green">支持</span></td><td><span class="tag t-gray">—</span></td></tr>
+      <tr><td>完整报表套件</td><td><span class="tag t-gray">—</span></td><td><span class="tag t-amber">需同时为门户管理员</span></td><td><span class="tag t-gray">—</span></tr>
+    </tbody>
+  </table>
+
+  <h3>4.1 兑换门户（Redemption）完整机制</h3>
+  <p>这是 Kotis 差异化最强、也最值得完整抄的一块逻辑：</p>
+  <ol>
+    <li><strong>发码</strong>：客户自助批量生成（Generic-use Codes），导出 CSV 用于邮件合并；也支持 Kotis 代发品牌邮件（主题行、Banner/Logo、正文富文本可编辑）。</li>
+    <li><strong>积分额度</strong>：每个码可带积分值。终端用户可任意加购，<strong>结算时总额不得超过码的积分上限</strong>；单次使用，结账后剩余积分作废；结账页显示此提示。</li>
+    <li><strong>默认一件一码</strong>：Redemption Portal 默认每码限选 1 件，可由 Program Manager 调整为指定件数。</li>
+    <li><strong>核销追踪</strong>：码状态 <code>unclaimed / claimed / hidden</code>，记录 <code>opened</code>、<code>opened_date</code>、<code>claimed_date</code>、<code>order_number</code>。</li>
+    <li><strong>提醒未使用者</strong>：Kotis 可对未核销用户发提醒（需客户提供邮箱与姓名清单）。</li>
+  </ol>
+
+  <div class="callout">
+    <span class="lbl">商业设计洞察</span>
+    <p style="margin:0">兑换码同时承担「预算控制」和「防薅羊毛」两个职能：预算额度 = 码面值，无需额外账本；码与收件人绑定（可带 email/first_name/last_name），天然形成可追溯的发放台账。仿制时务必保留「码 → 订单」的强关联与状态机。</p>
+  </div>
+
+  <h3>4.2 门户可配置项清单</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>基础定制（Standard）</h4>
+      <ul style="margin-bottom:0">
+        <li>品牌字体（Google Fonts 全量）+ 品牌色（建议客户给 Hex 值）</li>
+        <li>Header 三选一：白底 Logo / 全宽底色 / 全宽 Banner</li>
+        <li>Landing Page：分类图 3 列或 4 列排布</li>
+        <li>分类自定义图（默认取该分类第一件商品首图）</li>
+        <li>分类排序（同时影响落地页与列表顺序）</li>
+        <li>分类可置于顶部导航（默认左侧竖排）</li>
+        <li>Logo 左/中/右对齐</li>
+        <li>大字号 / 大图模式</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Banner 体系（Premium）</h4>
+      <ul style="margin-bottom:0">
+        <li><strong>Rotating</strong>：多 Banner 轮播</li>
+        <li><strong>Linked</strong>：Banner 挂外链</li>
+        <li><strong>Footer</strong>：Banner 置于分类下方</li>
+        <li><strong>Hero</strong>：通栏大图（2000×300）</li>
+        <li><strong>Standard Header</strong>：1600×295</li>
+        <li><strong>Bottom Footer</strong>：1000×215</li>
+        <li><strong>Skinny</strong>：1600×200</li>
+        <li><strong>分类图</strong>：400×400</li>
+      </ul>
+    </div>
+  </div>
+  <p class="src">尺寸规格来自官方《New Portal Set-up》文档；图片格式限 jpg / jpeg / gif / png / bmp / tif / tiff。</p>
+
+  <div class="callout warn">
+    <span class="lbl">值得注意的商业细节</span>
+    <p style="margin:0">「复制客户官网 Header/Footer」被明确定价为 <strong>$1,000/个</strong>（含每年 2 次微调），且官方<strong>明确不建议</strong>这么做（官网更新无法同步、无法挂活动 Banner、Footer 尤其易坏）。仿制系统若要做这个功能，建议直接内置「品牌 Token 化」替代方案——把 Header/Footer/Banner/Typography/Color 抽象成可继承的品牌主题对象，比复制像素更可维护。</p>
+  </div>
+</section>
+
+<section id="s5">
+  <h2 class="sec"><span class="num">05</span>下单系统功能规格</h2>
+
+  <h3>5.1 端到端下单主流程</h3>
+  <table>
+    <thead><tr><th style="width:8%">步骤</th><th style="width:24%">节点</th><th>行为与规则</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>浏览 / 选品</td><td>分类 → 商品详情 → 选规格（尺寸/颜色）。可开启「多规格网格」一次下单多个尺码</td></tr>
+      <tr><td>2</td><td>加购</td><td>红点促销 Banner 支持 SALE 标签、Highlight Text 置顶提示</td></tr>
+      <tr><td>3</td><td>结算页</td><td>地址表单；<strong>预算余额红色显示</strong>；Need By Date（可选）；「这是礼物」开关→ 手写卡；营销 Opt-in</td></tr>
+      <tr><td>4</td><td>提交</td><td>系统校验：库存 / 预算 / 限购 / 访问码 / 兑换码有效性</td></tr>
+      <tr><td>5</td><td>（仅 Non-CC）审批</td><td>生成待审批订单 → 触发审批人邮件 → 审批人可改数量 / 改运输等级 / 改需求日期 → 批准或驳回</td></tr>
+      <tr><td>6</td><td>付款</td><td>CC 门户走 Stripe Connect；红色项由 Kotis 商户账户代收</td></tr>
+      <tr><td>7</td><td>确认邮件</td><td>下单即发确认邮件（含全部明细）</td></tr>
+      <tr><td>8</td><td>拣货打包发运</td><td>仓库侧；缺货可先发（Short Ship），未发部分转 Backorder</td></tr>
+      <tr><td>9</td><td>发货邮件</td><td>发运即发邮件 + 运单号 + 轨迹</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 审批流规格（Approval）</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>配置维度</h4>
+      <ul style="margin-bottom:0">
+        <li><strong>门户级审批人</strong>（必配，激活该功能的开关）</li>
+        <li><strong>位置级审批人</strong>：一个 Portal 配多个 Location 时可分别指定</li>
+        <li>多个审批人时：全部收到邮件，<strong>任一人处理即生效</strong></li>
+        <li>管理员天然拥有审批权，但<strong>只有指定审批人收邮件</strong></li>
+        <li>未启用 Access List 时，<strong>所有金额（含 $0）订单均需审批</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>审批人可执行的动作</h4>
+      <ul style="margin-bottom:0">
+        <li>批准 / 驳回（驳回需填原因，原因随邮件发给下单人）</li>
+        <li>修改商品数量</li>
+        <li>升降运输等级（Shipping Method 下拉）</li>
+        <li>调整 Need By Date</li>
+        <li>查看该用户组的<strong>剩余预算</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">邮件触发点（共 4 类）</span>
+    <ol style="margin:0">
+      <li>下单人：「订单待审批，尚未发货」</li>
+      <li>审批人：含下单人、商品明细、剩余预算的审批链接</li>
+      <li>下单人：批准后「已批准」/ 驳回后「已驳回 + 原因」</li>
+      <li>下单人：发运后「已发货 + 运单号」</li>
+    </ol>
+  </div>
+
+  <h3>5.3 预算与用户组规格</h3>
+  <table>
+    <thead><tr><th style="width:20%">概念</th><th>定义</th></tr></thead>
+    <tbody>
+      <tr><td><strong>User Group</strong></td><td>按「经理 / 部门 / 办公地 / 任意维度」切分订单归属，用于追踪用量与支出。用户可属于 1 个、多个或 0 个组；组人数不限</td></tr>
+      <tr><td><strong>命名规范</strong></td><td>官方建议按「部门 - 地点」复合命名，如 <code>Marketing - Seattle</code></td></tr>
+      <tr><td><strong>组级能力</strong></td><td>① 指定审批人 ② 设置预算额度 ③ 结账页专属自定义下拉（如「部门」「尺码偏好」）</td></tr>
+      <tr><td><strong>预算规则</strong></td><td>预算耗尽 → 该组用户<strong>无法再下单</strong>，直至人工重置。结账页余额以红色显示（制造消费提醒）</td></tr>
+      <tr><td><strong>报表关联</strong></td><td>Sales Report / Shipment Report 含 <code>User Group</code> 列；下载 CSV 后可按组筛选</td></tr>
+      <tr><td><strong>典型场景</strong></td><td>Marketing 季度 $5,000 / HR 季度 $10,000；销售经理按人分配客户礼品额度；不同办公地独立额度</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 批量下单（CSV / Excel）</h3>
+  <p>这是高频刚需（一次给几十上百人发礼品）。Kotis 的实现方式值得注意——<strong>并非自助上传，而是把 CSV 邮件发给客服团队，由客服代提交</strong>。</p>
+  <div class="grid2">
+    <div class="card">
+      <h4>模板规则</h4>
+      <ul style="margin-bottom:0">
+        <li>必须与官方模板<strong>完全一致</strong>，否则不提交</li>
+        <li>地址字段<strong>最长 30 字符</strong></li>
+        <li>禁止特殊字符（如 ą \a ę）</li>
+        <li>州必须写 2–3 位缩写</li>
+        <li>SKU 格式：<code>38978-1-L</code>；多 SKU 逗号分隔 <code>38978-1-M,38978-4-OSFA</code></li>
+        <li>数量为 1 时写 <code>1</code>；多 SKU 数量对应写 <code>1,1</code></li>
+        <li>Unique Key 留空，由客服回填</li>
+        <li>一单只能有 Packing Slip Note <strong>或</strong> Handwritten Note，不能并存</li>
+        <li>国际单<strong>必须</strong>有收件人邮箱 + 电话（否则卡关务）</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>客服可代补字段</h4>
+      <ul style="margin-bottom:0">
+        <li>运输方式</li>
+        <li>统一补一个邮箱（不发单号追踪时用）</li>
+        <li>Bill to Job Number / Customer PO</li>
+        <li>全为无尺码商品时补 <code>OFSA-OS</code></li>
+        <li>可选字段：Instructions、Packing Slip Note、Handwritten Note、Need By Date、Receiver Email、Receiver Phone</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout ok">
+    <span class="lbl">仿制建议：把这一步做成自助</span>
+    <p style="margin:0">Kotis 让人工代劳，说明<strong>CSV 模板严格校验的体验很差</strong>。仿制系统应做成「上传 → 自动校验 → 逐行报错（定位到行号与字段）→ 预览确认 → 批量入库」，并支持 Excel 直接拖入。这是可明确的体验差异点。</p>
+  </div>
+
+  <h3>5.5 上架商品（Listing）可配置字段</h3>
+  <p>后台编辑单个商品时的完整字段集——这是「不改代码就能配出业务」的核心：</p>
+
+  <table>
+    <thead><tr><th style="width:14%">分组</th><th style="width:26%">字段</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4"><strong>Basic</strong></td><td>Name &amp; Description</td><td>商品名与「About this Product」下方描述</td></tr>
+      <tr><td>Categories</td><td>可加入多个分类 + 子分类，垃圾桶图标移除</td></tr>
+      <tr><td>Activated</td><td>勾选=门户展示；取消即下架</td></tr>
+      <tr><td>Price</td><td>门户展示价；部分门户可设为隐藏价格</td></tr>
+      <tr><td rowspan="10"><strong>Advanced</strong></td><td>Highlight Text</td><td>显示在商品名上方（如 SALE）</td></tr>
+      <tr><td>Custom Input Label</td><td>商品详情页增加文本框，<strong>用于收集个性化信息</strong></td></tr>
+      <tr><td>Custom Dropdown Values</td><td>把上面的文本框替换为下拉，选项以逗号分隔；需先填 Label 才生效</td></tr>
+      <tr><td>Deactivate After</td><td>定时自动下架（日期 + 时间）</td></tr>
+      <tr><td>Hold orders and notify</td><td>该商品相关订单挂起 + 邮件通知指定人（人工复核场景）</td></tr>
+      <tr><td>Size Chart</td><td>尺码表链接</td></tr>
+      <tr><td>Free Shipping</td><td>仅对已启用免运费的门户生效</td></tr>
+      <tr><td>Ready to activate with photo</td><td>仓库拍照上传后自动激活上架</td></tr>
+      <tr><td>Suggested</td><td>标记后进入商品页「你可能还喜欢」轮播（随机展示 2 件）</td></tr>
+      <tr><td>Backorderable + Delivery Notes</td><td>允许无库存下单（缺货先发）；必须填交付说明，否则商品页显示「暂不可购买」</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.6 后台自助下单（Inventory Management 下单）</h3>
+  <p>Program Admin 最快的下单路径，也是「多收件人 CSV 之外」的轻量方案。表单字段：</p>
+  <ul>
+    <li><strong>商品行</strong>：加数量；缺货项会高亮提示</li>
+    <li><strong>Shipping Method</strong>：选承运商 + 时效；<code>Economy</code> = 最低成本运费</li>
+    <li><strong>Need by Date</strong>：<strong>覆盖所有运输方式</strong>，系统会自动加急以赶期。不急就别填</li>
+    <li><strong>Ship On or After Date</strong>：未来工作日，到期前不发货</li>
+    <li><strong>PO#</strong>：可自定义标签的附加数据字段（默认叫 PO#，字段名可改）</li>
+    <li><strong>Include return labels</strong>：随箱附回程退货标签（国际/危险品不可用）</li>
+    <li><strong>Upload shipping instructions</strong>：上传发货说明或文件（如展会）</li>
+    <li><strong>Add note to recipient</strong>：打印在装箱单上的文字</li>
+    <li><strong>Receiver info is different</strong>：国际单必填——收件人电话 + 邮箱，过关必需</li>
+  </ul>
+</section>
+
+<section id="s6">
+  <h2 class="sec"><span class="num">06</span>仓储管理系统功能规格</h2>
+
+  <h3>6.1 SKU 定义（最易做错的一处）</h3>
+  <div class="callout warn">
+    <span class="lbl">Kotis 的 SKU 规则</span>
+    <p style="margin:0"><strong>每个尺码算一个独立 SKU</strong>（S/M/L/XL = 4 个 SKU）；一个颜色 2 个 SKU。同一 SKU 可以有任意数量（「货架上一个箱子 = 一个 SKU」）。<strong>预组套（Pre-kit）算 1 个 SKU</strong>。SKU 直接决定仓储费（套餐额度按 SKU 数计）。</p>
+  </div>
+
+  <h3>6.2 收货与入库（IIR, Incoming Inventory Request）</h3>
+  <p>入库是仓储系统的入口。Kotis 用「在途登记单（IIR）」把「货在路上」变成可见对象，避免到货时才知道有什么。</p>
+  <table>
+    <thead><tr><th style="width:22%">IIR 字段</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>Reference #</td><td>仓库用于关联到货包裹的编号——<strong>应打印或贴在包裹内外的装箱单上</strong>（可填运单号 / PO# / SKU#）</td></tr>
+      <tr><td>Est. Arrival</td><td>预计到仓日（Kotis 代产则按「生产周期 + 在途时间」自动算）</td></tr>
+      <tr><td>Vendor</td><td>供应商名；Kotis 代产时自动显示 "Kotis"</td></tr>
+      <tr><td>Tracking</td><td>运单号</td></tr>
+      <tr><td>Notes</td><td>其他说明</td></tr>
+      <tr><td>Size（逐项数量）</td><td>每个 SKU / 尺码分别填数量</td></tr>
+    </tbody>
+  </table>
+  <p>IIR 首页是一张在途表：Reference / Est. Arrival / Vendor / Delivered（运单显示已送达的日期）/ Received（仓库实际签收并开始入库的日期）。<strong>仅支持已有 SKU 的 IIR</strong>，新商品须先联系 Program Team。</p>
+
+  <h3>6.3 库存盘点（Cycle Count）</h3>
+  <ul>
+    <li>仓库用<strong>移动设备连 WMS</strong> 执行盘点</li>
+    <li>单次盘点 session 限 <strong>30–60 分钟</strong>，避免「计数疲劳」；超时换人或休息 15 分钟</li>
+    <li>WMS <strong>只提示盘点在库数量 0–10 且近 60 天有订单</strong>的 SKU（低库存 + 快周转优先）</li>
+    <li>差异必须当场双人复核；<strong>仓库经理复核所有 ±5 件以上的调整</strong></li>
+    <li>库存准确率承诺 ≥98%（按<strong>价值</strong>计，非件数），超出 2% 的损失由 Kotis 赔付</li>
+    <li>因入库数量错误而从未实际存在的数量（如入库报 1000 实产 500），<strong>不计入 2% 阈值</strong>——这是很精细的设计</li>
+  </ul>
+
+  <h3>6.4 拣货与包装</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Pre-kit（预组套）</h4>
+      <ul style="margin-bottom:0">
+        <li>适合：<strong>呈现很重要</strong>（棉纸、定制胶带、手写卡 5×7 非光面、可拍样板照片确认）</li>
+        <li>适合：<strong>发货要快</strong>（单 SKU 套件 24 小时内可拣包）</li>
+        <li>适合：<strong>多件小商品</strong>（防错、提速、提升开箱体验）</li>
+        <li>组套后计为 1 个 SKU</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Bundling（捆包）</h4>
+      <ul style="margin-bottom:0">
+        <li>同款商品按包装数量合并（如 100 张贴纸一包、25 支笔一袋）</li>
+        <li>常见规格：<strong>10 / 25 / 50 / 100</strong></li>
+        <li>方式：热缩膜、橡皮筋、胶袋</li>
+        <li>成本 $0.50–0.85/包</li>
+        <li>收益：减少出入库事务、提升拣货准确率、消化滞销</li>
+      </ul>
+    </div>
+  </div>
+  <p>另有 <strong>SKU Add-on</strong> 功能：给某 Portal 的<strong>每一笔订单</strong>自动追加一个商品（如感谢卡、贴纸），官方建议每 Portal 只配 1 个。</p>
+
+  <h3>6.5 仓储条码策略（反直觉设计）</h3>
+  <div class="callout">
+    <span class="lbl">Kotis 官方结论</span>
+    <p style="margin:0">「为什么条码对客户没有帮助」——Kotis <strong>不给单个商品贴条码</strong>，而是以「货架上的箱子」为 SKU 单位。理由是：整箱同款商品上架时<strong>不需要逐件扫描</strong>，只有拣货出库时才扫一次箱子。仿制时应理解这一取舍：<strong>单件级条码 = 更准但更慢；箱级 = 更快但要求整箱出库</strong>。若客户要散件发货，则必须回到单件条码 + 更复杂的拣货流程。</p>
+  </div>
+
+  <h3>6.6 入库时效 SLA</h3>
+  <table>
+    <thead><tr><th style="width:38%">货品来源</th><th>入库时效（自物流显示送达起）</th></tr></thead>
+    <tbody>
+      <tr><td>Kotis 代产商品</td><td><strong>2 个工作日</strong>（周一到货 → 最迟周三下班前入库）</td></tr>
+      <tr><td>非 Kotis 生产的商品</td><td><strong>4 个工作日</strong></td></tr>
+      <tr><td>新签客户承接既有库存</td><td><strong>7 个工作日</strong></td></tr>
+      <tr><td>展会器材退回</td><td>2–5 工作日（+ 干洗另加 5–10 天）</td></tr>
+      <tr><td>一般退货处理</td><td>5 个工作日</td></tr>
+      <tr><td>产品照片上架</td><td>入库完成后 3 个工作日内（大批量到货再 +1–2 天）</td></tr>
+    </tbody>
+  </table>
+  <p>异常：缺箱/不全的货 +1 天（共 3 个工作日）；无预告到货（无事先通知内容）→ 需 5 个工作日窗口且<strong>不可享赔付</strong>。</p>
+</section>
+
+<section id="s7">
+  <h2 class="sec"><span class="num">07</span>权限与角色模型</h2>
+
+  <h3>7.1 三级管理员</h3>
+  <table>
+    <thead><tr><th style="width:14%">角色</th><th style="width:32%">权限</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Owner</strong></td><td>报表、订单查询、全部库存、Incoming Inventory、门户设置、查看门户</td><td>全功能</td></tr>
+      <tr><td><strong>Manager</strong></td><td>报表、订单查询、Incoming Inventory、部分库存（按访问组）、可见访问组至少含 1 个 SKU 的门户</td><td>中间层，受 Item Access Group 约束</td></tr>
+      <tr><td><strong>Accounting</strong></td><td>报表、订单查询、查看门户</td><td>最受限，财务视角</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2 Item Access Group（库存内部隔离）</h3>
+  <ul>
+    <li>目的：把库存按部门/团队切分，Manager 只能看到并下单自己负责的货</li>
+    <li>规则：<strong>一个商品只能属于一个访问组</strong>；<strong>未分配访问组的商品仅 Owner 可见</strong></li>
+    <li>Manager 可见门户的条件：<strong>该门户至少含 1 个其有权查看的访问组商品</strong></li>
+    <li>配置：Program Settings → Edit Manager access group permissions → 勾选矩阵</li>
+  </ul>
+
+  <h3>7.3 门户级用户管理</h3>
+  <ul>
+    <li>新增用户 → 系统发<strong>邀请邮件</strong> → 用户自设密码（该流程仅对新用户）</li>
+    <li>Users 页面可查看用户、是否兼管理员、删除用户、新增用户</li>
+    <li>SSO：Google Workspace / Azure Active Directory / Okta / SAML —— <strong>不需另建 Kotis 账号</strong>，管理员无需手动开通</li>
+    <li>MFA：绑定任意验证器 App</li>
+    <li>访问码（Access Code）：整个 Portal 用单一密码保护，未输入无法查看商品</li>
+    <li>用户组下拉（Custom Option）：可在结算页按组显示专属下拉（如「部门」「尺码」）</li>
+    <li>Custom Input Label + Custom Dropdown Values：商品级自定义输入框/下拉</li>
+  </ul>
+
+  <div class="callout">
+    <span class="lbl">权限设计的核心洞察</span>
+    <p style="margin:0">Kotis 的权限是<strong>三层叠加</strong>的：① <strong>角色</strong>（Owner/Manager/Accounting）控制「能干什么」；② <strong>访问组</strong>控制「能看到哪些货」；③ <strong>用户组</strong>控制「花谁的钱、谁审批」。三者正交。仿制时务必把「预算归属」与「可见性」分开建模——Kotis 就是用 User Group 同时承载了预算和报表分组两个职责。</p>
+  </div>
+</section>
+
+<section id="s8">
+  <h2 class="sec"><span class="num">08</span>核心数据模型设计</h2>
+
+  <p>按 Kotis 实际行为反推的最小可行实体集。此模型已覆盖其 14 张报表与全部 API 所需字段。</p>
+
+  <h3>8.1 实体关系</h3>
+  <pre><code>Client (客户/租户)
+ ├── Program (项目/合同)  ── 1:N ──▶ Portal (门店)
+ │                                    ├── Listing (上架) ──▶ SKU
+ │                                    ├── PortalUser / UserGroup
+ │                                    └── ShippingProfile
+ ├── SKU ── 库存维度 (product/color/size/value)
+ │   ├── InventoryRecord (physical / available)
+ │   ├── InventoryAdjustment (原因码 + 数值)
+ │   ├── IIR (在途登记) + IIRLine
+ │   └── KitComponent (预组套构成)
+ ├── Order ── OrderLine ──▶ SKU
+ │   ├── Approval (状态 / 操作人 / 驳回原因)
+ │   ├── BudgetLedger (按 UserGroup 记账)
+ │   ├── PromotionCode / GiftCard / DiscountCode
+ │   └── Shipment ── ShipmentLine ──▶ Tracking
+ ├── RedemptionCode ──▶ (Portal, points, status, order)
+ └── ReportView / AuditLog / Notification</code></pre>
+
+  <h3>8.2 关键表设计要点</h3>
+  <table>
+    <thead><tr><th style="width:20%">实体</th><th style="width:32%">关键字段</th><th>设计要点</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SKU</strong></td><td><code>sku_code</code>, product, color, category, size, value_each, customer_item_no, hazmat, low_stock_threshold, access_group_id</td><td><strong>尺码独立成 SKU</strong>；<code>value_each</code> 支撑库存价值型赔付与 COGS</td></tr>
+      <tr><td><strong>InventoryRecord</strong></td><td><code>physical_quantity</code>, <code>available_quantity</code></td><td>两者必须分离：<code>available</code> = physical − 已下单未发</td></tr>
+      <tr><td><strong>Listing</strong></td><td>portal_id, sku_id, name, description, price, activated, highlight_text, custom_input_label, custom_dropdown_values, deactivate_after, hold_orders_notify, free_shipping, suggested, backorderable, delivery_notes, size_chart_url</td><td>Listing 是 <strong>Portal × SKU 的多对多</strong>，承载所有「该门户如何展示此商品」的可配置项</td></tr>
+      <tr><td><strong>Order</strong></td><td>order_number, portal_id, source(portal/api/csv/inventory-management), status, email, subtotal, shipping, discount, tax, tax_rate, total, gift_card_amount, approver_email, promotion_code, api_external_order_no, csv_unique_key, location, custom_option_label/value, additional_data_label/value, gift_notes, gift_notes_handwritten, need_by_date, marketing_optin, requested_ship_method</td><td><code>source</code> 字段是 API 幂等与对账的关键</td></tr>
+      <tr><td><strong>OrderLine</strong></td><td>order_id, sku_id, order_qty, original_order_qty, price, value_each, shipped_qty, return_label_included</td><td><strong>original_order_qty</strong> 保留原始数量，支撑「客户取消 1 件」后的对账</td></tr>
+      <tr><td><strong>Shipment</strong></td><td>order_id, ship_date, ship_method, tracking_numbers, delivery_status, boxes, subtotal, shipping, discount, tax, total</td><td>与 Order 分离，<strong>支持一个订单多包裹</strong>（部分发货）</td></tr>
+      <tr><td><strong>Approval</strong></td><td>order_id, approver_email, status, shipping_method_override, qty_overrides(json), need_by_date_override, reject_reason</td><td>审批人的修改必须留痕，订单进入「已修改后待确认」而非静默覆盖</td></tr>
+      <tr><td><strong>UserGroup</strong></td><td>name, approver_email, budget_amount, budget_used, budget_period, custom_option_label, custom_option_values</td><td>预算余额需高频读写，建议独立 Ledger 表而非累加字段</td></tr>
+      <tr><td><strong>RedemptionCode</strong></td><td>code, portal_id, points, status(unclaimed/claimed/hidden), opened, opened_date, claimed_date, order_number, email, first_name, last_name</td><td>单次使用 + 积分上限，核销与订单强关联</td></tr>
+      <tr><td><strong>InventoryAdjustment</strong></td><td>sku_id, adjustment(+/-), reason, date, operator</td><td>原因码（如 "Receiving Error"）必填，且要能区分「从未存在的量」</td></tr>
+      <tr><td><strong>IIR</strong></td><td>reference_no, est_arrival, vendor, tracking, notes, status, received_date</td><td>与 Order 分离，承载「在路上」的货</td></tr>
+      <tr><td><strong>AuditLog</strong></td><td>actor, action, entity_type, entity_id, before/after json, ip, created_at</td><td>多租户平台的合规底线</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout ok">
+    <span class="lbl">三条建模铁律</span>
+    <ol style="margin:0">
+      <li><strong>物理量与可用量分离</strong>：<code>physical_quantity</code>（货架实数）与 <code>available_quantity</code>（可下单数）必须独立存储，否则并发下单必然超卖。</li>
+      <li><strong>订单态与发货态分离</strong>：季度账单的「Portal Sales」取的是 <code>Shipment Subtotal</code> 而非 <code>Order Subtotal</code>——因为客户可中途改单。财务口径必须锁定在发货侧。</li>
+      <li><strong>订单来源必录</strong>：<code>portal / api / csv / inventory-management</code> 四类来源决定了履约 SLA 与对账路径。</li>
+    </ol>
+  </div>
+</section>
+
+<section id="s9">
+  <h2 class="sec"><span class="num">09</span>API 契约规格</h2>
+
+  <p>两个 API 域，共 6 个端点。统一采用 JSON:API 1.0 规范，认证为 <code>Authorization</code> 头直接放 API Key（无 Bearer 前缀）。</p>
+
+  <h3>9.1 端点总览</h3>
+  <table>
+    <thead><tr><th style="width:8%">#</th><th style="width:12%">方法</th><th style="width:34%">路径</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>GET</td><td><code>kwf.kotisdesign.com/api/v1/skus/quantity</code></td><td>批量查询库存（physical + available）</td></tr>
+      <tr><td>2</td><td>POST</td><td><code>kwf.kotisdesign.com/api/v1/orders/create</code></td><td>创建订单</td></tr>
+      <tr><td>3</td><td>GET</td><td><code>kwf.kotisdesign.com/api/v1/orders/status?order_numbers=</code></td><td>查订单状态 + 运单 + 轨迹</td></tr>
+      <tr><td>4</td><td>GET</td><td><code>kwf.kotisdesign.com/api/v1/orders/by_source</code></td><td>按来源批量拉订单号与状态</td></tr>
+      <tr><td>5</td><td>POST</td><td><code>stores.kotisdesign.com/api/v1/redemption_codes/create</code></td><td>批量生成兑换码</td></tr>
+      <tr><td>6</td><td>GET</td><td><code>stores.kotisdesign.com/api/v1/redemption_codes/status</code></td><td>查兑换码状态</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 API Key 机制</h3>
+  <ul>
+    <li>Key 创建链接需联系 Kotis 客户经理获取（不自助）</li>
+    <li>创建时可选 <strong>Live</strong> 勾选：勾选 = 正式 Key；不勾 = <strong>测试 Key</strong></li>
+    <li><strong>测试 Key 可升为正式，但正式 Key 不可降级为测试</strong></li>
+    <li>Notes 字段用于标记用途，便于清理废弃 Key</li>
+    <li>兑换码相关端点<strong>必须用正式 Key</strong></li>
+  </ul>
+
+  <h3>9.3 关键端点详情</h3>
+
+  <h4>① 查库存</h4>
+  <pre><code>#GET https://kwf.kotisdesign.com/api/v1/skus/quantity
+#set 'Authorization' header to api key
+
+{
+  "data": [
+    { "id": "33315", "type": "skus",
+      "attributes": { "physical_quantity": 0, "available_quantity": 0, "sku": "107529-1-L" } },
+    { "id": "33316", "type": "skus",
+      "attributes": { "physical_quantity": 0, "available_quantity": 0, "sku": "107529-1-M" } }
+  ],
+  "jsonapi": { "version": "1.0" }
+}</code></pre>
+
+  <h4>② 创建订单</h4>
+  <pre><code>#POST https://kwf.kotisdesign.com/api/v1/orders/create
+#set 'Authorization' header to api key
+#set 'Content-Type' header to 'application/json'
+
+{
+  "email": "test@example.com",
+  "shipping_method": "Economy",
+  "order_id": "",
+  "skus": [
+    { "quantity": "3", "sku": "107529-1-S" },
+    { "quantity": "1", "sku": "107529-4-OSFA" }
+  ],
+  "address": {
+    "name": "Test Person", "attention": "",
+    "address1": "123 First Street", "address2": "",
+    "city": "Seattle", "state": "WA", "zip": "98102",
+    "country": "", "phone": "", "address_type": ""
+  }
+}
+
+# 成功
+{ "status": "success", "order_num": "5134691" }
+
+# 失败
+{ "errors": [ { "title": "Invalid Order", "detail": "Sku 1 does not exist, Sku 2 does not exist" } ] }</code></pre>
+  <p class="src">注意：<code>quantity</code> 传的是<strong>字符串</strong>；<code>order_id</code> 留空表示由 Kotis 分配，否则为外部系统自带单号。</p>
+
+  <h4>③ 查订单状态与物流</h4>
+  <pre><code>#GET https://kwf.kotisdesign.com/api/v1/orders/status?order_numbers=12345,23719201
+
+{
+  "data": [
+    { "id": "12345", "type": "orders",
+      "attributes": { "status": "shipped" },
+      "relationships": { "shipments": { "data": [
+        { "type": "shipments", "id": "543416" },
+        { "type": "shipments", "id": "544568" } ] } } }
+  ],
+  "included": [
+    { "id": "543416", "type": "shipments",
+      "attributes": {
+        "tracking_numbers": "1Z8424330419842539",
+        "shipment_date": "2018-10-02T14:50:24-07:00",
+        "delivery_status": "delivered" } },
+    { "id": "544568", "type": "shipments",
+      "attributes": {
+        "tracking_numbers": "1Z8424330402599594",
+        "shipment_date": "2018-10-05T15:18:28-07:00",
+        "delivery_status": "out_for_delivery" } }
+  ],
+  "jsonapi": { "version": "1.0" }
+}</code></pre>
+  <table>
+    <thead><tr><th style="width:34%">order status</th><th>delivery_status（9 种）</th></tr></thead>
+    <tbody>
+      <tr><td><code>pending</code>, <code>partially_shipped</code>, <code>shipped</code>, <code>delivered</code>, <code>cancelled</code></td><td><code>unknown</code>, <code>pre_transit</code>, <code>in_transit</code>, <code>out_for_delivery</code>, <code>delivered</code>, <code>available_for_pickup</code>, <code>return_to_sender</code>, <code>failure</code>, <code>cancelled</code>, <code>error</code></td></tr>
+    </tbody>
+  </table>
+
+  <h4>④ 按来源拉订单（对账用）</h4>
+  <pre><code>#GET https://kwf.kotisdesign.com/api/v1/orders/by_source
+# 必填: source, start_date, end_date (ISO 8601)
+# 可选: portal_name（仅 source=portal 时生效）
+# source ∈ { all, portal, api, csv, inventory-management }
+# 约束: end_date ≥ start_date，且两者间隔 ≤ 60 天
+
+{ "data": [
+    { "order_number": "123456", "order_date": "2025-08-02T12:30Z",
+      "status": "shipped", "source": "portal", "portal_name": "testportalurl" } ] }
+
+# 错误
+{ "errors": [ { "title": "Invalid source",
+    "detail": "Invalid source. Valid sources: all, portal, api, csv, inventory-management",
+    "status": "400" } ] }</code></pre>
+
+  <h4>⑤ 批量生成兑换码</h4>
+  <pre><code>#POST https://stores.kotisdesign.com/api/v1/redemption_codes/create
+{ "portal_slug": "YOUR_PORTAL_SLUG", "number_to_create": "100" }
+
+# 可选字段
+# points: 码面值（用积分的门户必填；不用积分的门户传了会报错；必须 > 0）
+# email / first_name / last_name: 仅当 number_to_create = 1 时可用
+#   first_name、last_name 依赖 email；传 email 会立即把码发到该邮箱
+
+# 限额：日 5,000 个 / 年 100,000 个；需正式 Key</code></pre>
+
+  <h4>⑥ 查兑换码状态</h4>
+  <pre><code>#GET https://stores.kotisdesign.com/api/v1/redemption_codes/status
+# 参数: portal_slug, code
+
+{ "data": {
+    "code": "CODE_TO_LOOKUP",
+    "status": "unclaimed",          # claimed | unclaimed | hidden
+    "opened": true,
+    "opened_date": "2020-12-02T14:55:41.750-08:00",
+    "claimed_date": null,
+    "order_number": null },
+  "status": "ok" }
+
+# 错误: 400 / 404 → { "errors": [ { "title": "Code not found", "detail": "" } ] }</code></pre>
+
+  <div class="callout">
+    <span class="lbl">仿制时值得保留的 API 设计</span>
+    <ul style="margin:0">
+      <li><strong>统一错误对象</strong>：<code>{ "errors": [{ "title", "detail", "status" }] }</code>，客户端可统一处理</li>
+      <li><strong>relationships + included 侧载</strong>：一次请求拿全订单 + 运单，避免 N+1</li>
+      <li><strong>查询窗口限制 ≤60 天</strong>：保护后端，同时引导增量同步</li>
+      <li><strong>测试/正式 Key 分离</strong>：让集成商能安全开发</li>
+      <li><strong>兑换码创建单独限流</strong>（日/年上限），防批量滥用</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s10">
+  <h2 class="sec"><span class="num">10</span>报表体系（14 张报表）</h2>
+
+  <p>所有报表在 Customer Area → Standard Reports 下，支持 View / Download CSV，可按日期范围（默认上月）、Portal 筛选，Sales/Shipment 可开 Item Level Details。</p>
+
+  <table>
+    <thead><tr><th style="width:22%">报表</th><th style="width:44%">核心字段</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sales Report</strong></td><td>Order#, Email(PII), Portal URL/Title, Order Date, Shipping Address(PII 部分), Requested Ship Method, Instructions, Short Ship, Order Subtotal/Shipping/Discount/Tax/Tax Rate/Total, Gift Card + Codes, Non-Credit Subtotal, Approver, Address Code, Discount Code, Promotion Code, API External Order#, CSV Unique Key, Location, Custom Option Label/Value, Additional Data Label/Value, Gift Notes, Gift Notes Handwritten, Need By Date, Marketing OptIn<br><span class="src">+ Item 级：Item#, Customer Item#, Product, Color, Category, Size, Value Each, Order Qty, Original Order Qty, Price, Hazmat</span></td><td>全量订单视图，下单即入表</td></tr>
+      <tr><td><strong>Shipment Report</strong></td><td>Sales 全部字段 + Shipment Subtotal / Shipping / Discount / Tax / Total / Gift Card, Shipped, Boxes, Shipment Ship Method, Tracking, Shipment Status<br><span class="src">+ Shipped Qty, Return Label Included</span></td><td><strong>季度 Portal Sales 取此表的 Shipment Subtotal</strong></td></tr>
+      <tr><td><strong>Shipping Charges</strong></td><td>Order#, Email(PII), Charge Date, Portal, Shipping Address, Ship Method, Amount</td><td>承运商计费聚合；国际单常出现 2–3 条（运费 + 关税/税）</td></tr>
+      <tr><td><strong>Inventory Adjustments</strong></td><td>SKU, Customer Item#, Product, Adjustment(±), Reason, Date</td><td>库存变动留痕，客户可查</td></tr>
+      <tr><td><strong>Marketing Op-Ins</strong></td><td>Order#, Order Date, Portal, Ship-To Name(PII), Ship To Zip, Email(PII)</td><td>营销同意名单</td></tr>
+      <tr><td><strong>Returns</strong></td><td>Order #, RA#, Return Type(refund/exchange), Requested At, Requested By(PII), Notes, Exchange Details, Product Details, Return Qty, Refunded Amount</td><td>退货换货台账</td></tr>
+      <tr><td><strong>Check-ins Timings</strong></td><td>Reference, Received Date, Boxes, Minutes（签收入库耗时）, SKUs</td><td>客户专属商品入库效率（对应季度账单 Receiving 行）</td></tr>
+      <tr><td><strong>Check-ins Items</strong></td><td>Reference, Received Date, SKUs, Qty, Product</td><td>入库商品明细</td></tr>
+      <tr><td><strong>Backorders</strong></td><td>Order#, Email, Date, Portal, Qty, Product, SKU, Size, Inventory（当前库存）, Shipped on this Order</td><td>缺货与先发追踪</td></tr>
+      <tr><td><strong>Inventory Report</strong></td><td>SKU, Product, Color, Category, Size, Customer Item#, First Order, Total Orders, Average Monthly, Available Quantity, Actual Quantity, Estimated Months, Value Each, Value Total, Latest Price, Low Stock Threshold</td><td>库存健康度；可 Show Hidden SKUs</td></tr>
+      <tr><td><strong>12 Month Sales Summary</strong></td><td>Product, Color, Category, Item#, Size, Inventory, 1/3/6/12 month 订单数, Sales/12 month</td><td>商品级动销，含已停产/隐藏商品</td></tr>
+      <tr><td><strong>Daily Sales</strong></td><td>Day, Subtotal, Shipping, Discount, Tax, Total, Gift, Credit(Total−Gift), <strong>COGS</strong></td><td>按门户按天的销售与毛利概览</td></tr>
+      <tr><td><strong>Listing Details</strong></td><td>SKU, Listing name, List price, Activated or not, Portal SKU is listed on</td><td>各门户上架状态，可按门户筛</td></tr>
+      <tr><td><strong>Fulfillment Billing Report</strong></td><td>本季/本年采购额、各信用卡门户销售额、项目履约统计</td><td>平台费豁免追踪与账单预演</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <span class="lbl">三个必须照抄的报表细节</span>
+    <ol style="margin:0">
+      <li><strong>PII 自动脱敏</strong>：Ship-To、Attn、Address1、Address2、Email、Name 在导出中一律打码，但 City/State/Zip/Country 保留。这是欧美合规刚需，也是客户信任基础。</li>
+      <li><strong>财务口径分离</strong>：Sales Report 明确声明<strong>不用于季度销售汇总</strong>，季度 Portal Sales 必须用 Shipment Report 的 Shipment Subtotal。理由是用户可中途取消/改单。</li>
+      <li><strong>Shipping Charges 显示净价，不含 10% 加价</strong>，且「运费不参与返点」。同时明确提示同一订单出现多条运费记录是正常的（地址更正、关税、退回均后置计费）。</li>
+    </ol>
+  </div>
+</section>
+
+<section id="s11">
+  <h2 class="sec"><span class="num">11</span>SLA 与履约标准</h2>
+
+  <h3>11.1 发货时效（分单量与 SKU 数）</h3>
+  <p>基础承诺：<strong>90% 的有现货标准订单在下单或批准后 1 个工作日内发出</strong>。Next Day Air 订单在当地时间 9:00 前下单当日发。</p>
+  <table>
+    <thead><tr><th style="width:28%">数量</th><th style="width:36%">1 个 SKU</th><th>多 SKU</th></tr></thead>
+    <tbody>
+      <tr><td>1 – 49</td><td>标准 +1 天</td><td>标准 +2 天</td></tr>
+      <tr><td>50 – 249</td><td>+1 天</td><td>+2 天</td></tr>
+      <tr><td>250 – 499</td><td>+1 天</td><td>+3 天</td></tr>
+      <tr><td>500 – 1000</td><td>+2 天</td><td>+5 天</td></tr>
+      <tr><td>1000+</td><td>联系客服</td><td>联系客服</td></tr>
+    </tbody>
+  </table>
+  <p>额外 +1 工作日的情况：危险品 / 手写卡 / 国际单超 $2,500 / 需货运 / 承运商停运（如天气导致 UPS 不揽收）。</p>
+
+  <h3>11.2 准确率与赔付矩阵</h3>
+  <p>承诺：<strong>至少 98% 的订单 100% 准确且无损坏</strong>。以当季「错发+损坏率」2% 为赔付分界线：</p>
+  <table>
+    <thead><tr><th style="width:22%">项目</th><th style="width:39%">当季 &lt; 2%</th><th>当季 &gt; 2%</th></tr></thead>
+    <tbody>
+      <tr><td><strong>运费</strong></td><td>为赶需求日期可加急，但只收地面运价</td><td>Kotis 承担运费</td></tr>
+      <tr><td><strong>错发商品</strong></td><td>不退款；调整库存；按需提供预付回程标签</td><td>赔付<strong>货值</strong>；调整库存；提供预付标签</td></tr>
+      <tr><td><strong>损坏商品</strong></td><td>不退款</td><td>赔付<strong>货值 + 该单的履约费</strong></td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li>「压扁、压皱、脏了的外箱」不算损坏——损坏须导致具体商品无法按原用途使用（破杯、脏/次品服饰、缺件）</li>
+    <li>货值 <strong>&lt; $20</strong> 的错发商品不提供回程标签，但运费由 Kotis 承担，且不赔货值</li>
+    <li>索赔窗口：<strong>收货后 24 小时内</strong>提供照片 + 订单号，逾期可拒赔</li>
+    <li>赔付<strong>不追溯</strong>：仅对 2% 之后的订单生效</li>
+  </ul>
+
+  <h3>11.3 运输方式矩阵</h3>
+  <table>
+    <thead><tr><th style="width:24%">方式</th><th style="width:26%">时效</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>UPS Ground</td><td>3–5 工作日</td><td>启用 Need By Date 后自动开放 3 Day / 2nd Day / Next Day Air</td></tr>
+      <tr><td>FedEx Ground</td><td>3–5 工作日</td><td>同上，开放 Express Saver / 2-Day / Overnight</td></tr>
+      <tr><td>Economy</td><td>—</td><td>USPS/UPS/FedEx 全比价；<strong>唯一支持 PO Box 的方式</strong>；填了 Need By Date 会自动升级</td></tr>
+      <tr><td>Economy DDP</td><td>5–20 工作日</td><td>关税税费记客户账；<strong>支持 48 国</strong>，不支持时自动升为 Express DDP</td></tr>
+      <tr><td>Economy DDU</td><td>5–20 工作日</td><td>收件人付关税</td></tr>
+      <tr><td>Express DDP / UPS DDP / FedEx DDP</td><td>2–6 工作日</td><td>Express 在 UPS/FedEx 间比价；UPS DDP 为默认国际方式</td></tr>
+    </tbody>
+  </table>
+  <p>非保证时效：危险品（UPS 不担保）、恶劣天气、USPS/SurePost/SmartPost/FedEx International Connect、全部国际单（<strong>国际延误不提供信用补偿</strong>）。</p>
+
+  <h3>11.4 服务响应与客服</h3>
+  <ul>
+    <li>邮件询问：<strong>24–48 小时</strong>内响应；营业时间平均 <strong>1 小时 27 分</strong></li>
+    <li>电话询问：24 小时内响应；语音留言当日或次一工作日回拨</li>
+    <li>错发订单：Kotis 承担换货/补发成本，补发<strong>不再收运费</strong></li>
+    <li>可按需提供客服邮件分析（响应时长、解决率、首次响应解决率、会话数）</li>
+    <li>可用「两段式验证」确认与购买者通信；限制电话/聊天渠道的订单修改权限</li>
+  </ul>
+
+  <h3>11.5 生产与打样时效</h3>
+  <table>
+    <thead><tr><th style="width:32%">环节</th><th>时效</th></tr></thead>
+    <tbody>
+      <tr><td>Product Showcase 交付</td><td>1–2 工作日（含选品、MOQ、价格梯度）</td></tr>
+      <tr><td>初始 Mockup</td><td>1–2 工作日</td></tr>
+      <tr><td>Mockup 改稿</td><td>每轮 +1–2 工作日</td></tr>
+      <tr><td>丝网印刷生产</td><td>约 2 周</td></tr>
+      <tr><td>刺绣生产</td><td>约 3 周</td></tr>
+      <tr><td>全定制</td><td>约 90 天</td></tr>
+      <tr><td>国内运输</td><td>3–5 工作日</td></tr>
+      <tr><td>国际运输</td><td>1–3 周</td></tr>
+    </tbody>
+  </table>
+  <p class="src">Showcase 支持点赞/点踩反馈与「无需登录的分享链接」——这是降低客户决策门槛的细节。</p>
+</section>
+
+<section id="s12">
+  <h2 class="sec"><span class="num">12</span>计费模型与商业设计</h2>
+
+  <h3>12.1 平台费的抵扣逻辑</h3>
+  <div class="callout">
+    <span class="lbl">规则</span>
+    <ul style="margin:0">
+      <li>平台费 <strong>$1,500/季</strong>（约合 $499/月），季度采购额 ≥ <strong>$5,000 即全额豁免</strong></li>
+      <li>采购额在<strong>订单进入生产</strong>时计入（不是下单时），因此客户必须在季末前完成打样审批 + 签字 + 付款</li>
+      <li>财政季度：Q1 = 1–3 月，Q2 = 4–6 月，Q3 = 7–9 月，Q4 = 10–12 月</li>
+      <li>季末会提前提醒客户是否达到门槛</li>
+      <li>剩余季度不结转（Kotis 明确不鼓励压货）</li>
+    </ul>
+  </div>
+
+  <h3>12.2 仓储容量计费</h3>
+  <table>
+    <thead><tr><th style="width:22%">计量</th><th>定义</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SKU</strong></td><td>独立计库存的单位；每个尺码独立；预组套计 1 个</td></tr>
+      <tr><td><strong>托盘</strong></td><td>40"×48" 木托，可叉车搬运，堆高至 5 英尺。参考容量：约 2,000 件 T恤 / 1,500 件长袖 / 1,000 件卫衣 / 1,500 个水瓶</td></tr>
+      <tr><td><strong>货架</strong></td><td>取货位仅设计存放 1–2 箱；同款多箱转存托盘长期存放</td></tr>
+      <tr><td><strong>超额处理</strong></td><td>① 增加采购额自动升档 ② 减少商品数 ③ <strong>季末按超出量计费</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>12.3 包装费边界</h3>
+  <p>平台费覆盖<strong>标准包装</strong>：胶袋 + 常规库存纸箱。<strong>不覆盖</strong>异形定制包装（海报筒、易碎品、电子产品、烤炉、帐篷等）。官方建议大量寄送异形物品时在生产阶段预包装。</p>
+
+  <h3>12.4 运营关键数字（作为仿制系统的对标基线）</h3>
+  <table>
+    <thead><tr><th style="width:34%">指标</th><th>Kotis 公开数据</th></tr></thead>
+    <tbody>
+      <tr><td>年发运包裹量</td><td><strong>350,000+</strong>；日均 2,000+</td></tr>
+      <tr><td>准时率</td><td><strong>98%</strong>（有库存标准订单 90% 在 1 个工作日内发出）</td></tr>
+      <tr><td>美国覆盖</td><td><strong>95%</strong> 地区 2 日达</td></tr>
+      <tr><td>库存准确率</td><td>≥ <strong>98%</strong>（按价值）</td></tr>
+      <tr><td>订单准确率</td><td>≥ <strong>98%</strong> 100% 准确无损坏</td></tr>
+      <tr><td>配送网络</td><td>美：俄亥俄 + 犹他；国际：英国、欧盟、印度、中国</td></tr>
+      <tr><td>物流成本优化</td><td>某 Fortune 500 客户原运费占预算 40%，切换后<strong>年省 $326,000</strong></td></tr>
+      <tr><td>毛利率目标参考</td><td>行业惯例：定制礼品服务商毛利率约 30–45%（本项为估算，需自行验证）</td></tr>
+    </tbody>
+  </table>
+  <p class="src">上述除毛利率外均为 Kotis 官方或官方合作方公开表述；毛利率一行为行业经验估算，非 Kotis 披露数据。</p>
+</section>
+
+<section id="s13">
+  <h2 class="sec"><span class="num">13</span>集成生态清单</h2>
+
+  <table>
+    <thead><tr><th style="width:18%">类别</th><th style="width:22%">具体集成</th><th>要点</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4"><strong>CRM / 电商</strong></td><td>Salesforce</td><td>原生 App（AppExchange），可直接在 Salesforce 内发送单品；支撑销售与客户互动流程</td></tr>
+      <tr><td>Shopify</td><td><strong>双向</strong>：接 Shopify 订单 → 回传运单 → 同步库存；Kotis 负责履约</td></tr>
+      <tr><td>Stripe Connect</td><td>CC 门户的资金直接结算到客户方；需完成入驻并绑定银行账户</td></tr>
+      <tr><td>Zapier</td><td>HR 系统触发器（新员工/周年）→ 映射字段 → 自动建单，无需自建 API</td></tr>
+      <tr><td rowspan="3"><strong>HR 工作流</strong></td><td>Workday</td><td>用自定义报表排出周年/入职名单 → 提前排期发放</td></tr>
+      <tr><td>BambooHR</td><td>同上机制</td></tr>
+      <tr><td>Coupa PunchOut</td><td>采购受管控的目录采购；返回购物车含明细与运费；GL 编码、部门规则、审批与报表留在 Coupa；<strong>无需单独登录</strong></td></tr>
+      <tr><td rowspan="2"><strong>身份 / 分析</strong></td><td>SSO</td><td>Google Workspace、Azure AD、Okta、SAML</td></tr>
+      <tr><td>Google Analytics</td><td>填入 GA Tracking ID 即可获得门户流量与行为数据</td></tr>
+      <tr><td><strong>物流</strong></td><td>UPS / FedEx / USPS / DHL</td><td>Economy 全承运商比价；客户可自带承运商账号（第三方账号信息在 Program Settings 中管理）</td></tr>
+      <tr><td><strong>支付</strong></td><td>ACH / 支票</td><td>季度账单；W-9 表格</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s14">
+  <h2 class="sec"><span class="num">14</span>仿制实施路线图</h2>
+
+  <h3>14.1 MVP 范围界定（Phase 1：8–12 周）</h3>
+  <div class="grid3">
+    <div class="card">
+      <h4>必须做</h4>
+      <ul style="margin-bottom:0">
+        <li>多租户 + 无限 Portal</li>
+        <li>SKU + 库存双量（physical/available）</li>
+        <li>Non-CC 门户 + 信用卡门户</li>
+        <li>下单流程 + 审批流</li>
+        <li>用户组 + 预算</li>
+        <li>基础报表（Sales/Shipment/Inventory）</li>
+        <li>JSON:API 订单与库存接口</li>
+        <li>邮件通知（4 类触发点）</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>延后做</h4>
+      <ul style="margin-bottom:0">
+        <li>兑换码 + 积分（若客户无礼品场景可跳过）</li>
+        <li>Coupa / Salesforce 深度集成</li>
+        <li>Cycle Count 移动端</li>
+        <li>预组套（Pre-kit）</li>
+        <li>托盘计费</li>
+        <li>国际多仓</li>
+        <li>Showcase / Mockup 审批链</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>可超越 Kotis 的点</h4>
+      <ul style="margin-bottom:0">
+        <li>自助 CSV 校验与行级报错</li>
+        <li>可编程品牌主题（替代像素级复制）</li>
+        <li>多币种与本地化</li>
+        <li>库存预测建议（Kotis 仅给 Estimated Months）</li>
+        <li>Slack/飞书/企微审批通知</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>14.2 分阶段里程碑</h3>
+  <table>
+    <thead><tr><th style="width:12%">阶段</th><th style="width:22%">目标</th><th>交付物与验收标准</th></tr></thead>
+    <tbody>
+      <tr><td><strong>P1</strong><br>8–12 周</td><td>跑通「一个客户、一个门户」的下单闭环</td><td>多租户数据模型 + SKU 库存 + 门户展示 + 下单 + 审批 + 预算 + 邮件 + 基础报表 + 订单/库存 API</td></tr>
+      <tr><td><strong>P2</strong><br>6–8 周</td><td>接入真实仓储与履约</td><td>WMS 基础（收货、拣货、发运）、IIR 在途、库存调整留痕、Short Ship 缺货先发、承运商轨迹回传</td></tr>
+      <tr><td><strong>P3</strong><br>4–6 周</td><td>规模化交付能力</td><td>无限门户 + 品牌主题化配置、CSV 批量下单、兑换码与积分、14 张报表补齐、SSO</td></tr>
+      <tr><td><strong>P4</strong><br>持续</td><td>生态与商业化</td><td>Shopify/Salesforce/Zapier/Coupa 集成、计费与配额（SKU/托盘）、季度账单引擎、多语言多币种</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.3 技术选型建议</h3>
+  <table>
+    <thead><tr><th style="width:18%">层</th><th style="width:26%">建议</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td>后端</td><td>Rails 8 + PostgreSQL 16</td><td>与 Kotis 同构，JSON:API 生态现成（jsonapi-serializer / jsonapi-rails），多人协作规范</td></tr>
+      <tr><td>前端（后台）</td><td>React + TypeScript + Vite</td><td>后台表格与表单密集，React 生态最成熟</td></tr>
+      <tr><td>前端（门户）</td><td>Next.js（headless）+ Shopify Storefront API，<strong>或</strong>纯自研 + Stripe Payment Element</td><td>若需深度定制审批/预算/共享库存，headless 是必经之路；用 Shopify 只保留商品与支付，订单逻辑自持</td></tr>
+      <tr><td>支付</td><td>Stripe Connect（分账）</td><td>Kotis 用它把 CC 门户收入直接结算给客户方</td></tr>
+      <tr><td>邮件</td><td>Postmark / SES + 模板化</td><td>4 类触发点邮件必须模板化并可按客户改品牌</td></tr>
+      <tr><td>WMS</td><td>独立服务 + 移动端 PWA（React Native / Expo）</td><td>仓库场景需扫码、断网可用、手套操作友好</td></tr>
+      <tr><td>物流</td><td>EasyPost / Shippo 聚合</td><td>一次接入多承运商，实现 Economy 比价与轨迹聚合</td></tr>
+      <tr><td>可观测性</td><td>OpenTelemetry + Sentry + 审计日志</td><td>多租户系统必须能追责到操作人</td></tr>
+      <tr><td>部署</td><td>容器化 + GitOps；数据每日快照 + PITR</td><td>客户库存数据丢失是不可接受的商业事故</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.4 关键工程难点与对策</h3>
+  <table>
+    <thead><tr><th style="width:24%">难点</th><th>问题本质</th><th style="width:32%">对策</th></tr></thead>
+    <tbody>
+      <tr><td><strong>并发超卖</strong></td><td>多个 Portal 共享一个库存池</td><td>库存扣减走数据库行锁或乐观锁（<code>version</code> 字段）；下单走「预占 → 支付确认 → 实扣 → 超时释放」</td></tr>
+      <tr><td><strong>SKU 爆炸</strong></td><td>尺码×颜色导致 SKU 数膨胀，推高仓储费</td><td>引入「款式(Style) + 变体(Variant)」两层建模，费用只按 Variant 计；提供 SKU 合并工具</td></tr>
+      <tr><td><strong>审批与预算竞态</strong></td><td>审批人改数量后预算可能已超；两人同时批准同一单</td><td>审批动作与预算扣减在同一事务内；订单加版本号做乐观锁</td></tr>
+      <tr><td><strong>多口径财务对账</strong></td><td>Order 与 Shipment 金额不一致导致季度账单争议</td><td>建「财务口径中间层」：所有报表与账单统一从 Shipment 派生；差异单独设调整科目</td></tr>
+      <tr><td><strong>门户配置爆炸</strong></td><td>每个 Portal 十几个维度组合，配置项互相影响</td><td>配置项字段化存储 + 继承（客户级默认 → 门户级覆盖）；提供「预览 + 沙箱 Portal」</td></tr>
+      <tr><td><strong>PII 合规</strong></td><td>导出报表泄露收件人信息</td><td>PII 字段在序列化层统一脱敏；导出单独走审计日志；保留 City/State/Zip/Country</td></tr>
+      <tr><td><strong>多租户隔离</strong></td><td>跨客户数据泄露 = 重大事故</td><td>所有查询强制 tenant_id 过滤（可用 PostgreSQL RLS 或 ORM 全局 scope）；越权测试纳入 CI</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s15">
+  <h2 class="sec"><span class="num">15</span>差异化机会与风险清单</h2>
+
+  <h3>15.1 第三方评测暴露的 Kotis 弱项（= 你的切入点）</h3>
+  <table>
+    <thead><tr><th style="width:26%">弱项</th><th>评测原话要点</th><th style="width:26%">你的机会</th></tr></thead>
+    <tbody>
+      <tr><td>CSV 下单体验差</td><td>CSV 必须<strong>严格匹配模板</strong>，否则客服退回或代改</td><td>做自助上传 + 行级校验 + 错误定位 + 预览确认</td></tr>
+      <tr><td>生产周期长</td><td>全定制约 90 天；用户反馈新定制商品交期偏长</td><td>做「生产 ETA 沙盘」，下单时即给出可选交期与加价选项</td></tr>
+      <tr><td>生产治理靠人</td><td>打样审批是<strong>服务式流程</strong>，缺乏自动化版本控制工具</td><td>把 Mockup 审批做成版本化工作流（评论、区域标注、多轮留痕）</td></tr>
+      <tr><td>审批流证据不足</td><td>公开材料未充分展示多级审批工作流</td><td>审批链 + 审批 SLA + 委托代理 + 批量审批</td></tr>
+      <tr><td>配置依赖交付</td><td>品牌与权限配置需交付团队协助，非自助</td><td>自助品牌主题 + 权限模拟器（预览某人能看什么）</td></tr>
+      <tr><td>门户定制深度受限</td><td>高级定制深度逊于纯电商建站工具</td><td>提供 headless 扩展点 + 客户自带前端（iframe / SDK）</td></tr>
+      <tr><td>首月门槛</td><td>最低 $499/月；仓储档 $2,500 实施费</td><td>提供免费自助档（无仓储、少量 SKU），用实施服务变现</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.2 合规与运营风险</h3>
+  <table>
+    <thead><tr><th style="width:24%">风险</th><th>说明与应对</th></tr></thead>
+    <tbody>
+      <tr><td><strong>危险品合规</strong></td><td>打火机、电池、喷雾、磁性物品等需特殊承运与标识；UPS 对危险品时效<strong>不担保</strong>。需建危险品 SKU 标记 + 发运拦截 + 承运商限制</td></tr>
+      <tr><td><strong>国际关务</strong></td><td>印度需 KYC 表；各国需进口文件（UPS Import & Export Regulations）。需按国家配置必填表单与申报规则</td></tr>
+      <tr><td><strong>加州 Prop 65</strong></td><td>加州销售需合规警示，涉及特定材料/化学品</td></tr>
+      <tr><td><strong>税</strong></td><td>俄亥俄、犹他销售税豁免需表格备案（TC-721 等）；CC 门户涉及销售税代收代缴</td></tr>
+      <tr><td><strong>库存专有条款</strong></td><td>Kotis 合同含 <strong>Inventory Exclusivity</strong>（客户发往 Kotis 仓库的货，Kotis 有权投标收购）——这是 Kotis 的商业护城河，仿制时不要照抄</td></tr>
+      <tr><td><strong>SOC 2 / GDPR</strong></td><td>企业客户要求年度 SOC 2 Type 2 审计；GDPR 下 Kotis 为数据控制者，支持访问与删除请求</td></tr>
+      <tr><td><strong>SSO 无测试模式</strong></td><td>Kotis 的 SSO 一旦启用覆盖全平台，<strong>不提供测试环境</strong>——这是明显的体验缺陷，仿制时应提供沙箱 IdP 联调</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.3 商业模型参考锚点</h3>
+  <p>供定价设计参考（Kotis 公开价格 + 竞品公开价格交叉验证）：</p>
+  <table>
+    <thead><tr><th style="width:18%">竞品</th><th style="width:30%">公开定价</th><th>关键机制</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Kotis</strong></td><td>Core 首单 $500；Standard 起 $499/月（&lt;$5k/季时）；$2,500 实施费</td><td>采购额抵扣平台费；SKU/托盘配额</td></tr>
+      <tr><td><strong>OrderMyGear</strong></td><td>一次性店铺授权 $499–$2,999；月费 $119–$199；弹窗 3.95% + Stripe 2.9%+0.30；兑换单 $0.99/单</td><td>店铺数授权制 + 交易抽成</td></tr>
+      <tr><td><strong>SwagUp</strong></td><td>月费订阅（企业价未公开）</td><td>仓储/配送/换包单独计费</td></tr>
+      <tr><td><strong>Printfection</strong></td><td>统一月费（金额未公开）</td><td>产品 + 履约 + 运费分列</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s16">
+  <h2 class="sec"><span class="num">16</span>情报来源索引</h2>
+
+  <h4>一手来源（Kotis 官方）</h4>
+  <ul style="font-size:13.5px">
+    <li><a href="https://kotisdesign.com/platform/" target="_blank" rel="noopener">平台总览页</a> — 功能矩阵、集成清单、FAQ</li>
+    <li><a href="https://kotisdesign.com/pricing/" target="_blank" rel="noopener">定价页</a> — 四档套餐、SKU/托盘定义、计费规则</li>
+    <li><a href="https://kotisdesign.com/swag-stores" target="_blank" rel="noopener">Swag Stores</a> — 四类门户形态、集成细节</li>
+    <li><a href="https://kotisdesign.com/blog/kotis-design-vs-halo-branded-solutions" target="_blank" rel="noopener">Kotis vs HALO 对比</a> — 运营指标（35 万包裹/年、98%、95% 2 日达）</li>
+    <li><a href="https://kotisdesign.forumbee.com/t/83hvjff/api-documentation" target="_blank" rel="noopener">API 文档</a> — 6 个端点完整请求/响应</li>
+    <li><a href="https://kotisdesign.forumbee.com/t/m1hnk4z/portal-types-comparisons" target="_blank" rel="noopener">Portal Types &amp; Comparisons</a> — 功能矩阵</li>
+    <li><a href="https://kotisdesign.forumbee.com/t/35hja55/program-service-policy-warehousing-fulfillment-and-delivery-standards" target="_blank" rel="noopener">Program Service Policy</a> — 发货时效、赔付矩阵、入库时效、客服 SLA</li>
+    <li><a href="https://kotisdesign.forumbee.com/t/p8hp599/what-reports-can-i-pull" target="_blank" rel="noopener">What reports can I pull</a> — 13 张报表全字段</li>
+    <li><a href="https://kotisdesign.forumbee.com/t/35h3xhc/how-the-the-budget-feature-works" target="_blank" rel="noopener">Budget 机制</a> / <a href="https://kotisdesign.forumbee.com/t/83h3lgw/how-the-user-groups-feature-works" target="_blank" rel="noopener">User Groups</a> / <a href="https://kotisdesign.forumbee.com/t/x2h3y67/how-the-online-store-approval-process-works" target="_blank" rel="noopener">审批流程</a></li>
+    <li><a href="https://kotisdesign.forumbee.com/t/60h3xq2/how-to-place-orders-via-inventory-management" target="_blank" rel="noopener">后台下单</a> / <a href="https://kotisdesign.forumbee.com/t/g9hpg11/csv-uploads-ordering-for-multiple-people-at-once-in-bulk" target="_blank" rel="noopener">CSV 批量</a> / <a href="https://kotisdesign.forumbee.com/t/q6h38a0/editing-your-portal-what-you-can-edit" target="_blank" rel="noopener">Listing 字段</a> / <a href="https://kotisdesign.forumbee.com/t/y4hpfga/create-incoming-inventory-requests-iir" target="_blank" rel="noopener">IIR</a> / <a href="https://kotisdesign.forumbee.com/t/x2htsy3/program-admin-account-types-item-access-groups" target="_blank" rel="noopener">管理员与访问组</a></li>
+    <li><a href="https://kotisdesign.forumbee.com/t/83h39x5/inventory-adjustments-report-cycle-counts" target="_blank" rel="noopener">库存调整与 Cycle Count</a> / <a href="https://kotisdesign.forumbee.com/t/y4hp2sb/portal-shipping-options" target="_blank" rel="noopener">运输方式</a> / <a href="https://kotisdesign.forumbee.com/t/35hp53r/how-a-redemption-portal-works" target="_blank" rel="noopener">兑换门户</a></li>
+  </ul>
+
+  <h4>实测指纹</h4>
+  <ul style="font-size:13.5px">
+    <li><code>curl -I https://stores.kotisdesign.com/</code> → <code>Server: nginx</code>、<code>X-Runtime</code>、<code>_depot_session</code>、<code>X-Request-Id</code>、<code>Set-Cookie: XSRF-TOKEN</code></li>
+    <li><code>curl -I https://mykotis.kotisdesign.com/</code> → <code>_my_kotis_session</code>、<code>X-Runtime: 0.003423</code></li>
+    <li>门户访问被 Cloudflare 拦截（<code>Cf-Mitigated: challenge</code>）</li>
+  </ul>
+
+  <h4>第三方来源</h4>
+  <ul style="font-size:13.5px">
+    <li><a href="https://www.leapoutdigital.com/enterprise-headless-shopify-philippines/" target="_blank" rel="noopener">LeapOut Digital 案例</a> — Kotis 的 Shopify → headless 演进与合作方背景</li>
+    <li><a href="https://www.rfp.wiki/marketing/promotional-product-management-software/kotis-design/printfection" target="_blank" rel="noopener">RFP.wiki 竞品对比</a> — 弱项与 TCO 驱动因素</li>
+    <li><a href="https://www.itechguides.com/products/kotis-swag-platform" target="_blank" rel="noopener">iTechGuides 评测</a> — 套餐内容与优缺点</li>
+    <li><a href="https://techyorker.com/products/kotis-swag-platform" target="_blank" rel="noopener">TechYorker</a> — 技术细节（SSO 无测试模式、API 60 天窗口、代码限额）</li>
+  </ul>
+
+  <h4>未获取到的信息（需进一步探查）</h4>
+  <ul style="font-size:13.5px">
+    <li>Fulfillment Billing Report 的<strong>完整字段清单</strong>与季度账单行项目明细（官方仅描述用途，未公开结构）</li>
+    <li>具体商品单价与仓储履约费单价（需销售报价）</li>
+    <li>Mockup / Showcase 的详细交互（视频形式，无文字规格）</li>
+    <li>Cycle Count 的 WMS 实际界面（仅描述逻辑）</li>
+    <li>MyKotis 的完整页面清单与权限矩阵细节（部分页面仅在演示视频中）</li>
+  </ul>
+</section>
+
+<footer>
+  Kotis Swag 平台系统拆解与仿制规格书 v1.0 · 编制于 2026-10-29 · 情报来源：Kotis Design 官方帮助中心 / 定价页 / 平台页 / API 文档、实测 HTTP 指纹、第三方评测<br>
+  本报告用于产品设计与自主研发参考；文中标注为估算或推断的内容已单独标明，请勿直接作为商业承诺依据。
+</footer>
+
+</div>
+</body>
+</html>
