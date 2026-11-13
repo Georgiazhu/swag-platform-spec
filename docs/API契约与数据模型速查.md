@@ -3,6 +3,9 @@
 > 配套文档：`Kotis系统拆解与仿制规格书.html`
 > 来源：Kotis 官方 API 文档（2026-09-11 更新）+ 官方帮助中心，实测 HTTP 指纹
 > 用途：仿制系统对外接口设计的直接参考
+>
+> **2026-11-13 补充**：新增 §10「Cyndi 侧落地口径」。§0–§9 是**竞品原文转录**，请勿直接改写；
+> 本仓库两套资料的对照、现状校正与待决策分歧见 [`整合汇总与修订台账.md`](整合汇总与修订台账.md)。
 
 ---
 
@@ -708,3 +711,53 @@ CREATE TABLE audit_logs (
 8. **PII 在序列化层统一脱敏** —— 不在各个报表里各写一遍
 9. **多租户强制隔离** —— 所有查询带 `program_id`；建议加 PostgreSQL RLS 或 ORM 全局 scope
 10. **API 60 天查询窗口 + 兑换码日/年限额** —— 保护后端并引导增量同步
+
+---
+
+## 10. Cyndi 侧落地口径（2026-11-13 补充，待评审）
+
+> 本节不是竞品资料，而是把 §0–§9 映射到 Cyndi 现有系统后的**建议草案**。
+> 所有条目的决策状态见 [`整合汇总与修订台账.md` §4](整合汇总与修订台账.md)，定稿后再回写本节。
+
+### 10.1 建议统一常量
+
+| 类别 | 建议取值 | 与竞品的差异 |
+|---|---|---|
+| 订单状态 | `pending` / `partially_shipped` / `shipped` / `delivered` / `cancelled` | 沿用竞品，需与现有 PENDING 等状态做映射迁移 |
+| 配送状态 | `unknown` / `pre_transit` / `in_transit` / `out_for_delivery` / `delivered` / `available_for_pickup` / `return_to_sender` / `failure` / `cancelled` / `error` | 沿用竞品 10 档，前后端共用同一份常量 |
+| 订单来源 | `showcase_portal` / `admin_manual` / `api` / `csv` / `inventory_management` | 竞品为 4 类；增加业务线区分后对外再映射回 `portal / api / csv / inventory-management` |
+| 兑换码状态 | `unclaimed` / `claimed` / `hidden` | 沿用 |
+| 密钥模式 | `test` / `live`（不可逆，另提供 revoke / rotate） | 沿用不可逆，补轮换与审计 |
+| SKU 编码 | `货号-色码-尺码`，例 `2027-03-EGG-L` | 竞品为 `107529-1-L`；Cyndi 需先给颜色补稳定 id，编码一旦生成不随颜色改名变化 |
+| 订单号 | `SHOWCASE-YYYYMMDD-NNN`（showcase）/ `SW-`（商城） | 已上线；客户方单号另存 `external_order_no`，作幂等键 |
+| 金额 | `en-US` 千分位 + 2 位小数 | 已全站上线；数据层仍缺金额分项 |
+
+### 10.2 建议不照搬 / 需改造的点
+
+| 竞品做法 | Cyndi 建议 | 理由 / 台账编号 |
+|---|---|---|
+| 拆成 `kwf` 与 `stores` 两个接口域 | 统一 `www.cyndiglobal.com/api/v1/` | 当前规模无收益，减少证书与部署复杂度 |
+| 严格 JSON:API 1.0 | 简化 JSON，但 `/orders/status` 保留 `shipments[]` 关联数组 | 降低前后端适配成本（D-07） |
+| `Authorization: <裸 key>` | 内部统一存 `key_hash`，对外兼容裸 key 与 Bearer | 客户端实现差异（D-06） |
+| 60 天查询窗口 | 首版对齐 60 天，报表侧分段查询；季度对账受阻再放宽到 90 天 + 分页 | 与 11-13 报告结论冲突（D-05） |
+| `quantity` 传字符串 | 接口层做数字/字符串兼容，服务端统一转整数 | 避免客户系统类型不一致报错 |
+| 客户端可传 `order_id` | 只作 `external_order_no` 幂等键；**单价、总价、创建时间一律服务端生成** | 现有服务端定价、MOQ、阶梯价校验不可绕过 |
+| 积分 points | 表结构预留可空，首版只启用「件数/金额额度」 | 取决于客户是否有员工福利场景（D-12） |
+| 完整多租户 DDL（PostgreSQL） | 落到 D1 时按 `落地差距分析.md` §3.2 改写；加列须 `ALTER TABLE ADD COLUMN` 并同步 `CREATE TABLE` 与 `MIGRATIONS` | 现有项目工程约定 |
+
+### 10.3 最小对外端点（与 11-13 报告板块 B 对齐）
+
+| 方法 | 路径 | 用途 | 关键约束 |
+|---|---|---|---|
+| GET | `/api/v1/skus/quantity` | 可售库存 | 只暴露 `available_quantity`；无库存行返回「按单生产、不限量」显式标记，不返回空或 0 |
+| POST | `/api/v1/orders/create` | 创建订单 | `external_order_no` + `api_key_id` 唯一约束；一次性返回全部校验错误行 |
+| GET | `/api/v1/orders/status` | 订单与追踪 | `order_numbers` 批量；一单可带多个 shipment |
+| GET | `/api/v1/orders/by_source` | 按来源对账（P1） | 来源合法、ISO 8601 日期、跨度上限（D-05 / D-11） |
+
+> ⚠️ **优先级未定**：本仓库 `落地差距分析.md` D7 把对外 API 列为 P2 / 阶段 D，而 11-13 报告列为 P0 / 阶段 1。
+> 见台账 §4 的 **D-01**，决策前不要据此排期。
+
+### 10.4 关联资料
+
+- 竞品 API 页逐章解读与 8 个板块设计：[`对标API文档补充分析.md`](对标API文档补充分析.md)
+- 现状校正、统一板块索引、分歧决策与合并路线图：[`整合汇总与修订台账.md`](整合汇总与修订台账.md)
